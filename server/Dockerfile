@@ -11,10 +11,9 @@ COPY package*.json ./
 RUN npm install
 # Copy the rest of the application code
 COPY . .
-RUN npm gcp-build
 
 # Expose the port on which your Express.js application runs
-EXPOSE 3000
+EXPOSE 8000
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["npm", "dev"]
