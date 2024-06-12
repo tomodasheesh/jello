@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TextField, Box, IconButton, Button } from '@mui/material';
 import { VisibilityOff, Visibility, Email } from '@mui/icons-material';
 import { api } from '../../api';
+import { useSnackbar } from '../../hooks/useSnackbar';
 
 function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,14 +10,25 @@ function SignUpForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState(''); 
+  const { Snackbar, handleOpen } = useSnackbar();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+
+    handleOpen({
+      color: 'info',
+      message: 'Loading...'
+    });
+
     const { data, error } = await api('auth/sign-up', {
       method: 'POST',
       body: JSON.stringify({ email, password })
     });
-    console.log(data, error);
+
+    handleOpen({
+      color: error ? 'error' : 'info',
+      message: error ? data.message : 'Sign up Successful!'
+    });
   };
 
   return (
@@ -83,6 +95,8 @@ function SignUpForm() {
       <Box sx={{ my: 2 }}>
         <Button type="submit" variant="contained" sx={{ width: '100%' }}>Login</Button>
       </Box>
+
+      <Snackbar></Snackbar>
     </form>
   );
 }
