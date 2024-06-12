@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "dev": "node server.js",
+    "gcp-build": "tsc -p .",
+    "create-env": "printenv > .env",
+    "start": "node ./dist/index.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.3.0",
