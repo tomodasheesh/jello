@@ -1,5 +1,7 @@
 # Jello
 
+![Jello App]('./docs/image.png')
+
 ## Description
 
 Jello a project management tool that works for any type of project, workflow, or team.
