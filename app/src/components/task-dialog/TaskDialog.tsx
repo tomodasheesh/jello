@@ -8,8 +8,9 @@ import { Add } from '@mui/icons-material';
 import { getRandomId } from '../../utils/helpers';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import { DUMMY_MEMBERS } from '../../constants';
+import { DUMMY_MEMBERS, DEFAULT_IMAGE } from '../../constants';
 import { useSession } from '../../hooks/useSession';
+
 interface TaskDialogProp {
   open: boolean
   task: Nullable<Task>
@@ -18,8 +19,6 @@ interface TaskDialogProp {
   onDelete: (id: string) => void
 }
 
-const defaultImage = 'https://static.zooniverse.org/www.zooniverse.org/assets/simple-avatar.png';
-
 function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) {
   const [newTask, setNewTask] = useState<Nullable<Task>>(task);
   const { user } = useSession();
@@ -27,7 +26,7 @@ function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) 
   const MEMBERS: any = [...DUMMY_MEMBERS, {
     id: user?.id,
     email: user?.email,
-    image: defaultImage
+    image: DEFAULT_IMAGE
   }];
 
 
@@ -43,7 +42,7 @@ function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) 
   const handleOnSave = () => {
     onSave({
       ...newTask,
-      assignee: newTask.assignee ?? defaultImage
+      assignee: newTask.assignee ?? DEFAULT_IMAGE
     } as Task);
   };
 
@@ -107,7 +106,7 @@ function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) 
           <Typography variant="body2" fontWeight="600">Assignee</Typography>
           <Select
             id="assignee"
-            value={newTask.assignee ?? defaultImage}
+            value={newTask.assignee ?? DEFAULT_IMAGE}
             label="Members"
             onChange={handleAssignee}
           >

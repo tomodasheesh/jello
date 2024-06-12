@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Button } from '@mui/material';
+import { IconButton, Grid, Avatar, Button } from '@mui/material';
 import { client } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { DEFAULT_IMAGE } from '../constants';
 
 import AdsClickIcon from '@mui/icons-material/AdsClick';
 import AppBar from '@mui/material/AppBar';
@@ -9,7 +11,6 @@ import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -21,12 +22,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Outlet } from 'react-router-dom';
+import { useSession } from '../hooks/useSession';
 
 const drawerWidth = 250;
 
 export default function UserLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const { user } = useSession();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -66,7 +69,7 @@ export default function UserLayout() {
       <List>
         {['Project #1', 'Project #2', 'Project #3'].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton selected={text === 'Project #1'}>
               <ListItemIcon>
                 {
                   text === 'Project #1' ? <AdsClickIcon /> : index % 2 === 0 ? <InboxIcon /> : <MailIcon />
@@ -77,6 +80,9 @@ export default function UserLayout() {
           </ListItem>
         ))}
       </List>
+      <Box sx={{ position: 'absolute', bottom: 0, p: 2 }}>
+        <Button color="error" startIcon={<LogoutIcon />} onClick={handleLogout}>Logout</Button>
+      </Box>
     </div>
   );
 
@@ -91,16 +97,22 @@ export default function UserLayout() {
         }}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Button onClick={handleLogout}>Logout</Button>
+          <Grid container>
+            <Grid>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2, display: { md: 'none' } }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Typography sx={{ mr: 2, display: { xs: 'none', md: 'block' } }}>{ user.email }</Typography>
+          <Avatar alt="User" src={DEFAULT_IMAGE} />
         </Toolbar>
       </AppBar>
       <Box

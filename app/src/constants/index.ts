@@ -40,3 +40,5 @@ export const DUMMY_MEMBERS = [
   }
 ];
 
+export const DEFAULT_IMAGE = 'https://static.zooniverse.org/www.zooniverse.org/assets/simple-avatar.png';
+
