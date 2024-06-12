@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 8000
 
 # Start the application
-CMD ["npm", "dev"]
+CMD ["npm", "run", "dev"]
