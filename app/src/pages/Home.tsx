@@ -69,12 +69,12 @@ function Home() {
   return (
     <>
       <Grid container sx={{ mb: 2 }}>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12} lg={4}>
           <Typography variant="h4">
-            Project Name
+            Project #1
           </Typography>
         </Grid>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12} lg={8}>
           <Box display="flex" alignItems="center" justifyContent="end">
             <Box sx={{ mr: 1 }}>
               <Button 
