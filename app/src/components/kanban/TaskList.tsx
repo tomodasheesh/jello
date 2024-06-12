@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Task from './Task';
 import { Task as StateTask, Status } from '../../types/app.type';
 import { Card, Chip, Button, Box, Typography } from '@mui/material';
