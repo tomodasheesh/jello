@@ -1,6 +1,6 @@
 # Jello
 
-![Jello App]('./image.png')
+![Jello App]('/images/jello.png')
 
 ## Description
 
