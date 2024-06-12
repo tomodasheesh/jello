@@ -3,10 +3,12 @@ import Kanban from '../components/kanban/Kanban';
 import type { Task, Status } from '../types/app.type';
 import { getRandomId } from '../utils/helpers';
 import { SwapVert } from '@mui/icons-material';
-import { Grid, Typography, Button, Box } from '@mui/material';
+import { Grid, Typography, Button } from '@mui/material';
 import SearchInput from '../components/ui/SearchInput';
 import { api } from '../api';
 import { useDebounce } from '../hooks/useDebounce';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 const getTasksWithQuery = async (taskQuery: any) => {
   const query = new URLSearchParams(taskQuery);
@@ -18,6 +20,8 @@ function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [keyword, setKeyword] = useState('');
   const [sorted, setSorted] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const kanban = useRef<{ showCreateTask: () => void }>(null);
 
@@ -68,30 +72,31 @@ function Home() {
 
   return (
     <>
-      <Grid container sx={{ mb: 2 }}>
+      <Grid container sx={{ mb: 2 }} spacing={1}>
         <Grid item xs={12} lg={4}>
           <Typography variant="h4">
             Project #1
           </Typography>
         </Grid>
         <Grid item xs={12} lg={8}>
-          <Box display="flex" alignItems="center" justifyContent="end">
-            <Box sx={{ mr: 1 }}>
-              <Button 
+          <Grid container spacing={2} alignItems="center" justifyContent={isMobile ? 'left' : 'end'}>
+            <Grid item xs={6} sm="auto">
+              <Button
+                sx={{ width: '100%' }}
                 variant={sorted ? 'contained' : 'outlined'}
                 startIcon={<SwapVert />} 
                 onClick={handleSortOnClick}
               >
                 Sort by date
               </Button>
-            </Box>
-            <Box sx={{ mr: 1 }}>
-              <Button variant="contained" onClick={handleCreateTask}>Create Task</Button>
-            </Box>
-            <Box>
+            </Grid>
+            <Grid item xs={6} sm="auto">
+              <Button sx={{ width: '100%' }} variant="contained" onClick={handleCreateTask}>Create Task</Button>
+            </Grid>
+            <Grid item xs={12} sm="auto">
               <SearchInput value={keyword} onChange={setKeyword} />
-            </Box>
-          </Box>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       <Kanban

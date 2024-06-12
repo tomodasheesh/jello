@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import { client } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 
+import AdsClickIcon from '@mui/icons-material/AdsClick';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,7 +22,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Outlet } from 'react-router-dom';
 
-const drawerWidth = 300;
+const drawerWidth = 250;
 
 export default function UserLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -50,15 +51,12 @@ export default function UserLayout() {
 
   const drawer = (
     <div>
-      <Toolbar />
+      <Typography variant="h3" fontWeight={600} color="primary" sx={{ textAlign: 'center', py: 2 }}>Jello</Typography>
       <Divider />
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+        {['Dashboard', 'Teams', 'Notifications', 'Activity'].map((text) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>
@@ -66,11 +64,13 @@ export default function UserLayout() {
       </List>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+        {['Project #1', 'Project #2', 'Project #3'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {
+                  text === 'Project #1' ? <AdsClickIcon /> : index % 2 === 0 ? <InboxIcon /> : <MailIcon />
+                }
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -86,8 +86,8 @@ export default function UserLayout() {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
         }}
       >
         <Toolbar>
@@ -96,22 +96,19 @@ export default function UserLayout() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2}}
+            sx={{ mr: 2, display: { md: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            JELLO
-          </Typography>
           <Button onClick={handleLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
         aria-label="mailbox folders"
       >
-        <Drawer
+        <Drawer 
           variant="temporary"
           open={mobileOpen}
           onTransitionEnd={handleDrawerTransitionEnd}
@@ -120,7 +117,7 @@ export default function UserLayout() {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { xs: 'block', md: 'none' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
@@ -129,7 +126,7 @@ export default function UserLayout() {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
+            display: { xs: 'none', md: 'block' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
           open
@@ -139,7 +136,7 @@ export default function UserLayout() {
       </Box>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{ flexGrow: 1, p: 3, width: { md: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
         <Outlet />
