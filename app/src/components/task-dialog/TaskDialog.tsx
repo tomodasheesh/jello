@@ -14,9 +14,10 @@ interface TaskDialogProp {
   task: Nullable<Task>
   onCancel: () => void
   onSave: (newTask: Task) => void
+  onDelete: (id: string) => void
 }
 
-function TaskDialog({ open, task, onCancel, onSave }: TaskDialogProp) {
+function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) {
   const [newTask, setNewTask] = useState<Nullable<Task>>(task);
 
   const updateField = (field: keyof Nullable<Task>, value: any) => {
@@ -30,6 +31,10 @@ function TaskDialog({ open, task, onCancel, onSave }: TaskDialogProp) {
 
   const handleOnSave = () => {
     onSave(newTask as Task);
+  };
+
+  const handleOnDelete = () => {
+    if (task.id) onDelete(task.id);
   };
 
   const handleSubtaskChange = (id: string, field: string, newValue: any) => {
@@ -107,6 +112,7 @@ function TaskDialog({ open, task, onCancel, onSave }: TaskDialogProp) {
         <Button variant="outlined" onClick={onCancel}>
           Cancel
         </Button>
+        { task.status === 'Trash' && <Button variant="contained" color="error" onClick={handleOnDelete}>Delete</Button> }
         <Button variant="contained" onClick={handleOnSave}>Save</Button>
       </DialogActions>
     </Dialog>

@@ -25,7 +25,7 @@ function Task({ task, index, onClick }: TaskProp) {
                 <Typography variant="body1" component="div">
                   { task.title }
                 </Typography>
-                { task.sequence }
+
                 <Grid
                   sx={{ mt: 1.5 }} 
                   container

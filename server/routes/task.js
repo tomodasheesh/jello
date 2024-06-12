@@ -41,13 +41,13 @@ router.patch('/order', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const client = createClient({ req, res });
-  const { data, error } = await client.from('tasks').insert(req.body)
+  const { data, error } = await client.from('tasks').insert(req.body).select();
 
   res.json({
     success: !error,
     message: error?.message ?? 'Success',
-    data
-  })
+    data: data && data[0]
+  });
 });
 
 router.patch('/', async (req, res) => {
@@ -63,7 +63,7 @@ router.patch('/', async (req, res) => {
 
 router.delete('/', async (req, res) => {
   const client = createClient({ req, res });
-  const { data, error } = await client.from('tasks').delete(req.body).eq('id', req.body.id)
+  const { data, error } = await client.from('tasks').delete().eq('id', req.body.id)
 
   res.json({
     success: !error,

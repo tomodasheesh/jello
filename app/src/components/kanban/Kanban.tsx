@@ -29,6 +29,37 @@ const getDefaultTask = (status?: Status): Nullable<Task> => ({
   sequence: 0
 });
 
+const saveTask = async (task: Task, create?: boolean) => {
+  const getPayload = () => {
+    const payload: Record<string, any> = {
+      assignee: task.assignee,
+      description: task.description,
+      project: task.project,
+      status: task.status,
+      subtasks: task.subtasks,
+      title: task.title,
+      attachments: task.attachments,
+      sequence: task.sequence
+    };
+    if (!create) {
+      payload.id = task.id;
+    }
+    return payload;
+  };
+
+  return await api('task', {
+    method: create ? 'POST' : 'PATCH',
+    body: JSON.stringify(getPayload())
+  });
+};
+
+const deleteTask = async (id: string) => {
+  return await api('task', {
+    method: 'DELETE',
+    body: JSON.stringify({ id })
+  });
+};
+
 const Kanban = forwardRef(({ defaultToDo, defaultInProgress, defaultCompleted, defaultTrash }: KanbanProps, ref) => {
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Nullable<Task>>(getDefaultTask());
@@ -46,12 +77,19 @@ const Kanban = forwardRef(({ defaultToDo, defaultInProgress, defaultCompleted, d
     isAdding.current = false;
   };
 
-  const handleOnSave = (newTask: Task) => {
+  const handleOnSave = async (newTask: Task) => {
     setOpen(false);
     if (isAdding.current) {
       const tasks = getNewArrayFrom(newTask.status) ?? [];
-      setNewState(newTask.status, [newTask, ...tasks]);
-      saveTask(newTask, true);
+      const { data } = await saveTask(newTask, true);
+      setNewState(newTask.status, [
+        {
+          ...newTask, 
+          dateCreated: data.data.dateCreated,
+          id: data.data.id
+        },
+        ...tasks
+      ]);
       return;
     }
 
@@ -76,6 +114,13 @@ const Kanban = forwardRef(({ defaultToDo, defaultInProgress, defaultCompleted, d
     setSelectedTask(task);
   };
 
+  const handleOnDelete = (id: string) => {
+    setOpen(false);
+    const newTasks = trash.filter((task) => task.id !== id);
+    setNewState('Trash', newTasks);
+    deleteTask(id);
+  };
+
   const handleDragStop = (context: any) => {
     handleDragEnd(context, (tasks) => {
       if (tasks) {
@@ -84,30 +129,6 @@ const Kanban = forwardRef(({ defaultToDo, defaultInProgress, defaultCompleted, d
           body: JSON.stringify({ tasks })
         });
       }
-    });
-  };
-
-  const saveTask = async (task: Task, create?: boolean) => {
-    const getPayload = () => {
-      const payload: Record<string, any> = {
-        assignee: task.assignee,
-        description: task.description,
-        project: task.project,
-        status: task.status,
-        subtasks: task.subtasks,
-        title: task.title,
-        attachments: task.attachments,
-        sequence: task.sequence
-      };
-      if (!create) {
-        payload.id = task.id;
-      }
-      return payload;
-    };
-
-    const { error } = await api('task', {
-      method: create ? 'POST' : 'PATCH',
-      body: JSON.stringify(getPayload())
     });
   };
 
@@ -141,6 +162,7 @@ const Kanban = forwardRef(({ defaultToDo, defaultInProgress, defaultCompleted, d
         task={selectedTask} 
         onCancel={handleOnCancel}
         onSave={handleOnSave}
+        onDelete={handleOnDelete}
       />
     </DragDropContext>
   );
