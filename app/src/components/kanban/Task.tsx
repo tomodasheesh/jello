@@ -10,6 +10,9 @@ interface TaskProp {
 
 function Task({ task, index, onClick }: TaskProp) {
   const date = formatDate(task.dateCreated);
+  const subtask = task.subtasks ?? [];
+  const subtaskCount = subtask.length;
+  const subtaskDone = (subtask.filter((subtask) => subtask.done)).length;
   return (
     <Draggable draggableId={`${task.id}`} key={task.id} index={index}>
       {
@@ -39,6 +42,7 @@ function Task({ task, index, onClick }: TaskProp) {
                     <Typography variant="body2">
                       { date }
                     </Typography>
+                    <Typography variant="caption">{`${subtaskDone}/${subtaskCount}`} subtask</Typography>
                   </Grid>
                 </Grid>
               </CardContent>
