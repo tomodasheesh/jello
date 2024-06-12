@@ -17,6 +17,7 @@ export interface Task {
   description: string,
   subtasks: Subtask[]
   attachments: string[]
+  sequence: number
 }
 
 export type Nullable<T> = {

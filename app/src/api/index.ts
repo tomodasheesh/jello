@@ -9,7 +9,7 @@ export const api = async (route: string, init?: RequestInit) => {
       signal: controller.signal
     });
     const json = await resp.json();
-    return { data: json, error: null, abort: controller.abort };
+    return { data: json, error: !json.success, abort: controller.abort };
   } catch (error) {
     return { data: null, error };
   }

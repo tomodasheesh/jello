@@ -1,17 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, type DependencyList } from 'react';
-import { useTimeout } from './useTimeout';
+import { useEffect, useRef, type DependencyList } from 'react';
 
 export const useDebounce = (fn: () => void, delay: number, deps: DependencyList) => {
-  const { reset, clear } = useTimeout(fn, delay);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialRender = useRef(true);
 
   useEffect(() => {
-    return reset();
-  }, [...deps, reset]);
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
 
-  useEffect(() => {
-    return clear;
-  }, []);
+    timeoutRef.current = setTimeout(fn, delay);
+
+    return () => {
+      timeoutRef.current && clearTimeout(timeoutRef.current);
+    };
+  }, [...deps]);
 };
 
 

@@ -2,19 +2,30 @@ import { useState } from 'react';
 import { TextField, Box, IconButton, Button } from '@mui/material';
 import { VisibilityOff, Visibility, Email } from '@mui/icons-material';
 import { api } from '../../api';
+import { client } from '../../lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  
+  const navigate = useNavigate();
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const { data, error } = await api('auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password })
     });
-    console.log(data, error);
+
+    if (!error) {
+      await client.auth.setSession({
+        access_token: data.data.session.access_token,
+        refresh_token: data.data.session.refresh_token
+      });
+
+      navigate('/home');
+    }
   };
 
   return (

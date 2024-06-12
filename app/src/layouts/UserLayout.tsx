@@ -1,4 +1,8 @@
 import { useState } from 'react';
+import { Button } from '@mui/material';
+import { client } from '../lib/supabase';
+import { useNavigate } from 'react-router-dom';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -36,6 +40,12 @@ export default function UserLayout() {
     if (!isClosing) {
       setMobileOpen(!mobileOpen);
     }
+  };
+
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    client.auth.signOut();
+    navigate('/');
   };
 
   const drawer = (
@@ -86,13 +96,14 @@ export default function UserLayout() {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2}}
           >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             JELLO
           </Typography>
+          <Button onClick={handleLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
       <Box

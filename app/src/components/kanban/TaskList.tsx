@@ -1,11 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Task from './Task';
 import { Task as StateTask, Status } from '../../types/app.type';
 import { Card, Chip, Button, Box, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { Droppable } from '@hello-pangea/dnd';
 import { STATUS_COLOR } from '../../constants';
-
 interface TaskListProps {
   label: Status
   tasks: StateTask[]
@@ -14,14 +13,15 @@ interface TaskListProps {
 }
 
 function TaskList({ label, tasks, onClickAdd, onTaskClick }: TaskListProps) {
-
   const chipColor = useMemo(() => {
     return STATUS_COLOR[label] as any;
   }, [label]);
 
   return (
     <Card sx={{ p: 2 }}>
-      <Chip label={label.toUpperCase()} color={chipColor}/>
+      <Box display="flex" justifyContent="space-between">
+        <Chip label={label.toUpperCase()} color={chipColor} />
+      </Box>
       <Droppable droppableId={label}>
         {
           (provided: any) => (

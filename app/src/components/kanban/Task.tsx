@@ -1,7 +1,7 @@
 import { Avatar, Card, CardContent, Typography, Grid } from '@mui/material';
 import type { Task } from '../../types/app.type';
 import { Draggable } from '@hello-pangea/dnd';
-
+import { formatDate } from '../../utils/helpers';
 interface TaskProp {
   task: Task
   index: number
@@ -9,6 +9,7 @@ interface TaskProp {
 }
 
 function Task({ task, index, onClick }: TaskProp) {
+  const date = formatDate(task.dateCreated);
   return (
     <Draggable draggableId={`${task.id}`} key={task.id} index={index}>
       {
@@ -24,6 +25,7 @@ function Task({ task, index, onClick }: TaskProp) {
                 <Typography variant="body1" component="div">
                   { task.title }
                 </Typography>
+                { task.sequence }
                 <Grid
                   sx={{ mt: 1.5 }} 
                   container
@@ -35,7 +37,7 @@ function Task({ task, index, onClick }: TaskProp) {
                   </Grid>
                   <Grid>
                     <Typography variant="body2">
-                      { task.dateCreated }
+                      { date }
                     </Typography>
                   </Grid>
                 </Grid>

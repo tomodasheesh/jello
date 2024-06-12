@@ -18,19 +18,19 @@ export const useKanban = ({ todoArg, inProgressArg, completedArg, trashArg }: De
     return array.find((item: Task) => `${item.id }` === id);
   }, []);
 
-  const setNewState = (board: string, task: Task[]) => {
+  const setNewState = (board: string, tasks: Task[]) => {
     switch (board) {
     case 'To Do':
-      setToDo(task);
+      setToDo(tasks);
       break;
     case 'Completed':
-      setCompleted(task);
+      setCompleted(tasks);
       break;
     case 'In Progress':
-      setInProgress(task);
+      setInProgress(tasks);
       break;
     case 'Trash':
-      setTrash(task);
+      setTrash(tasks);
       break;
     }
   };
@@ -60,7 +60,9 @@ export const useKanban = ({ todoArg, inProgressArg, completedArg, trashArg }: De
       if (newFromTasks && task) {
         newFromTasks.splice(fromIndex, 1);
         newFromTasks.splice(toIndex, 0, { ...task, status: toBoard as Status });
-        return setNewState(fromBoard, newFromTasks);
+        const fromTasksState = newFromTasks.map((item, index) => ({ ...item, sequence: index + 1 }));
+        setNewState(fromBoard, fromTasksState);
+        return fromTasksState;
       }
     }
 
@@ -68,19 +70,23 @@ export const useKanban = ({ todoArg, inProgressArg, completedArg, trashArg }: De
     if (newFromTasks && newToTasks && task) {
       newFromTasks.splice(fromIndex, 1);
       newToTasks.splice(toIndex, 0,  { ...task, status: toBoard as Status });
-      setNewState(fromBoard, newFromTasks);
-      setNewState(toBoard, newToTasks);
+      const fromTasksState = newFromTasks.map((item, index) => ({ ...item, sequence: index }));
+      const toTasksState = newToTasks.map((item, index) => ({ ...item, sequence: index }));
+      setNewState(fromBoard, fromTasksState);
+      setNewState(toBoard, toTasksState);
+      return [...newToTasks, ...newFromTasks];
     }
   }, [
     getNewArrayFrom,
     findItemById
   ]);
-  
-  const handleDragEnd = useCallback((result: any) => {
+
+  const handleDragEnd = useCallback((result: any, afterMovedFn?: (tasks?: Task[]) => void) => {
     const { destination, source, draggableId } = result;
     if (!destination) return;
  
-    moveItem(source.droppableId, destination.droppableId, source.index, destination.index, draggableId);
+    const updatedTasks = moveItem(source.droppableId, destination.droppableId, source.index, destination.index, draggableId);
+    afterMovedFn?.(updatedTasks);
   }, [moveItem]);
 
   return {
