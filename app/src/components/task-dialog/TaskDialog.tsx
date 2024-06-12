@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogActions, Button, Box, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogActions, Button, Box, Typography, Select, MenuItem } from '@mui/material';
 import CheckBoxInput from '../ui/CheckBoxInput';
 import type { Task, Nullable } from '../../types/app.type';
 import Textarea from '../ui/Textarea';
@@ -8,7 +8,8 @@ import { Add } from '@mui/icons-material';
 import { getRandomId } from '../../utils/helpers';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-
+import { DUMMY_MEMBERS } from '../../constants';
+import { useSession } from '../../hooks/useSession';
 interface TaskDialogProp {
   open: boolean
   task: Nullable<Task>
@@ -17,8 +18,18 @@ interface TaskDialogProp {
   onDelete: (id: string) => void
 }
 
+const defaultImage = 'https://static.zooniverse.org/www.zooniverse.org/assets/simple-avatar.png';
+
 function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) {
   const [newTask, setNewTask] = useState<Nullable<Task>>(task);
+  const { user } = useSession();
+
+  const MEMBERS: any = [...DUMMY_MEMBERS, {
+    id: user?.id,
+    email: user?.email,
+    image: defaultImage
+  }];
+
 
   const updateField = (field: keyof Nullable<Task>, value: any) => {
     setNewTask((_newTask) => {
@@ -30,7 +41,10 @@ function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) 
   };
 
   const handleOnSave = () => {
-    onSave(newTask as Task);
+    onSave({
+      ...newTask,
+      assignee: newTask.assignee ?? defaultImage
+    } as Task);
   };
 
   const handleOnDelete = () => {
@@ -67,6 +81,10 @@ function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) 
     updateField('subtasks', newSubtasks);
   };
 
+  const handleAssignee = (e: any) => {
+    updateField('assignee', e.target.value);
+  };
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -83,6 +101,22 @@ function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) 
         </Box>
         <Box sx={{ mt: 2}}>
           <Textarea label="Description" value={newTask.description ?? ''} onChange={(e) => updateField('description', e.target.value)} minRows={4}></Textarea>
+        </Box>
+
+        <Box sx={{ mt: 2}}>
+          <Typography variant="body2" fontWeight="600">Assignee</Typography>
+          <Select
+            id="assignee"
+            value={newTask.assignee ?? defaultImage}
+            label="Members"
+            onChange={handleAssignee}
+          >
+            {
+              MEMBERS.map((member: any) => (
+                <MenuItem key={member.id} value={member.image}>{ member.email }</MenuItem>
+              ))
+            }
+          </Select>
         </Box>
 
         <Box sx={{ mt: 2 }}>
