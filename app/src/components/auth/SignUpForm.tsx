@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import { TextField, Box, IconButton, Button } from '@mui/material';
 import { VisibilityOff, Visibility, Email } from '@mui/icons-material';
+import { api } from '../../api';
 
-interface LoginFormProp {
-  
-}
-
-function SignUpForm(props: LoginFormProp) {
+function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState(''); 
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    console.log();
+    const { data, error } = await api('auth/sign-up', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+    console.log(data, error);
   };
 
   return (
@@ -28,13 +29,7 @@ function SignUpForm(props: LoginFormProp) {
           value={email}
           InputProps={{
             endAdornment: (
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={() => setShowPassword(v => !v)}
-                edge="end"
-              >
-                <Email />
-              </IconButton>
+              <Email />
             ),
           }}
           onChange={(e) => setEmail(e.target.value)}
@@ -68,7 +63,7 @@ function SignUpForm(props: LoginFormProp) {
           fullWidth
           label="Confirm Password" 
           variant="outlined"
-          type={confirmPass ? 'text' : 'password'}
+          type={showConfirmPass ? 'text' : 'password'}
           value={confirmPass}
           InputProps={{
             endAdornment: (

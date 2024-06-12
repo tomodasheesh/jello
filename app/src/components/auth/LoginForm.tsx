@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { TextField, Box, IconButton, Button } from '@mui/material';
 import { VisibilityOff, Visibility, Email } from '@mui/icons-material';
+import { api } from '../../api';
 
-interface LoginFormProp {
-  
-}
-
-function LoginForm(props: LoginFormProp) {
+function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    console.log();
+    const { data, error } = await api('auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+    console.log(data, error);
   };
 
   return (
