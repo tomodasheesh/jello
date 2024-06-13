@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.API_BASE_URL ?? 'https://jello-2i23.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
 
 export const api = async (route: string, init?: RequestInit) => {
   try {
