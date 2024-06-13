@@ -5,7 +5,10 @@
 ## Description
 
 Jello a project management tool that works for any type of project, workflow, or team.
-[a link](https://jello-app.pages.dev/)
+
+## Live Demo
+
+[jello-app.pages.dev](https://jello-app.pages.dev/)
 
 ## Features
 
@@ -25,7 +28,7 @@ Jello a project management tool that works for any type of project, workflow, or
 
 ## Installation
 
-To get a local copy up and running follow these simple steps.
+To start development mode, follow these simple steps.
 
 1. Clone to repo.
 

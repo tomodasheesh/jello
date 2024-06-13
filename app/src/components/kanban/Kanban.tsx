@@ -4,6 +4,7 @@ import TaskDialog from '../task-dialog/TaskDialog';
 import { Grid } from '@mui/material';
 import TaskList from './TaskList';
 
+import { useSnackbar } from '../../hooks/useSnackbar';
 import { useKanban } from '../../hooks/useKanban';
 import { getRandomId } from '../../utils/helpers';
 import { api } from '../../api';
@@ -65,6 +66,8 @@ const Kanban = forwardRef(({ defaultToDo, defaultInProgress, defaultCompleted, d
   const [selectedTask, setSelectedTask] = useState<Nullable<Task>>(getDefaultTask());
   const isAdding = useRef(false);
 
+  const { Snackbar, handleOpen } = useSnackbar();
+
   const { handleDragEnd, moveItem, getNewArrayFrom, setNewState, todo, inProgress, completed, trash } = useKanban({
     todoArg: defaultToDo,
     inProgressArg: defaultInProgress,
@@ -80,19 +83,33 @@ const Kanban = forwardRef(({ defaultToDo, defaultInProgress, defaultCompleted, d
   const handleOnSave = async (newTask: Task) => {
     setOpen(false);
     if (isAdding.current) {
+      handleOpen({
+        color: 'info',
+        message: 'Saving...'
+      });
+
       const tasks = getNewArrayFrom(newTask.status) ?? [];
-      const { data } = await saveTask(newTask, true);
-      setNewState(newTask.status, [
-        {
-          ...newTask, 
-          dateCreated: data.data.dateCreated,
-          id: data.data.id
-        },
-        ...tasks
-      ]);
+      const { data, error } = await saveTask(newTask, true);
+      if (!error) {
+        isAdding.current = false;
+        setNewState(newTask.status, [
+          {
+            ...newTask,
+            dateCreated: data.data.dateCreated,
+            id: data.data.id
+          },
+          ...tasks
+        ]);
+      }
+
+      handleOpen({
+        color: error ? 'error' : 'success',
+        message: error ? data.message : 'Created a new task'
+      });
       return;
     }
 
+    setOpen(false);
     const oldTask = selectedTask;
     const fromArray = getNewArrayFrom(oldTask.status ?? 'To Do');
     if (!fromArray) return;
@@ -164,6 +181,8 @@ const Kanban = forwardRef(({ defaultToDo, defaultInProgress, defaultCompleted, d
         onSave={handleOnSave}
         onDelete={handleOnDelete}
       />
+
+      <Snackbar></Snackbar>
     </DragDropContext>
   );
 });

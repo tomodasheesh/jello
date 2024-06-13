@@ -20,7 +20,11 @@ interface TaskDialogProp {
 }
 
 function TaskDialog({ open, task, onCancel, onSave, onDelete }: TaskDialogProp) {
-  const [newTask, setNewTask] = useState<Nullable<Task>>(task);
+  const [newTask, setNewTask] = useState<Nullable<Task>>({
+    ...task,
+    title: task.title ?? 'Add title here',
+    description: task.description ?? 'Add description here'
+  });
   const { user } = useSession();
 
   const MEMBERS: any = [...DUMMY_MEMBERS, {
