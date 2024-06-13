@@ -4,7 +4,7 @@ import { VisibilityOff, Visibility, Email } from '@mui/icons-material';
 import { api } from '../../api';
 import { useSnackbar } from '../../hooks/useSnackbar';
 
-function SignUpForm() {
+function SignUpForm({ onSignUpSuccess }: { onSignUpSuccess: () => void }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [email, setEmail] = useState('');
@@ -25,10 +25,14 @@ function SignUpForm() {
       body: JSON.stringify({ email, password })
     });
 
-    handleOpen({
-      color: error ? 'error' : 'info',
-      message: error ? data.message : 'Sign up Successful!'
-    });
+    if (error) {
+      handleOpen({
+        color: 'error',
+        message: data.message
+      });
+    } else {
+      onSignUpSuccess();
+    }
   };
 
   return (
@@ -93,7 +97,7 @@ function SignUpForm() {
       </Box>
 
       <Box sx={{ my: 2 }}>
-        <Button type="submit" variant="contained" sx={{ width: '100%' }}>Login</Button>
+        <Button type="submit" variant="contained" sx={{ width: '100%' }}>Sign Up</Button>
       </Box>
 
       <Snackbar></Snackbar>

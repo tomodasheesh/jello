@@ -2,9 +2,19 @@ import { useState } from 'react';
 import { Grid, Box, Card, Typography, CardContent, ButtonGroup, Button } from '@mui/material';
 import LoginForm from '../components/auth/LoginForm';
 import SignUpForm from '../components/auth/SignUpForm';
+import { useSnackbar } from '../hooks/useSnackbar';
 
 function Landing() {
   const [selected, setSelected] = useState('login');
+  const { Snackbar, handleOpen } = useSnackbar();
+
+  const handleSignUpSuccess = () => {
+    setSelected('login');
+    handleOpen({
+      color: 'success',
+      message: 'Sign up Successful!'
+    });
+  };
 
   const label = selected === 'login' ? 'Login' : 'Sign Up';
 
@@ -20,10 +30,11 @@ function Landing() {
             </ButtonGroup>
           </Box>
 
-          {selected === 'login' ? <LoginForm /> : <SignUpForm />}
+          {selected === 'login' ? <LoginForm /> : <SignUpForm onSignUpSuccess={handleSignUpSuccess}/>}
           
         </CardContent>
       </Card>
+      <Snackbar></Snackbar>
     </Grid>
   );
 }
